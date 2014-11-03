@@ -27,7 +27,7 @@ public class DeviceRegistrationDatastore {
 
 	public DeviceRegistration insertDeviceRegistration(DeviceRegistration deviceRegistration) {
 		if(deviceRegistrationsByDeclaredDeviceId.containsKey(deviceRegistration.getDeclaredDeviceId())) {
-			throw new IllegalArgumentException("Device already exists");
+			throw new IllegalArgumentException("Device Registration already exists");
 		}
 		
 		deviceRegistration.setId(generateDeviceId());
@@ -37,9 +37,14 @@ public class DeviceRegistrationDatastore {
 	}
 
 	public DeviceRegistration updateDeviceRegistration(Long id, DeviceRegistration deviceRegistration) {
-		DeviceRegistration registeredDeviceRegistration = deviceRegistrationsById.get(id);
-		registeredDeviceRegistration.setGcmRegistrationId(deviceRegistration.getGcmRegistrationId());
-		return registeredDeviceRegistration;
+		DeviceRegistration persistentDeviceRegistration = deviceRegistrationsById.get(id);
+
+        if(persistentDeviceRegistration == null) {
+            throw new IllegalArgumentException("Device Registration doesn't exist");
+        }
+
+		persistentDeviceRegistration.setGcmRegistrationId(deviceRegistration.getGcmRegistrationId());
+		return persistentDeviceRegistration;
 	}
 	
 	public DeviceRegistration insertOrUpdateDeviceRegistration(DeviceRegistration deviceRegistration) {
