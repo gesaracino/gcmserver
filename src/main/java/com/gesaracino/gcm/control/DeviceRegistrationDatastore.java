@@ -1,11 +1,11 @@
 package com.gesaracino.gcm.control;
 
+import com.gesaracino.gcm.entity.DeviceRegistration;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import com.gesaracino.gcm.entity.DeviceRegistration;
 
 public class DeviceRegistrationDatastore {
 	private static DeviceRegistrationDatastore instance;

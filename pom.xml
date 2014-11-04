@@ -7,17 +7,39 @@
 	<packaging>war</packaging>
 	<name>Google Cloud Messaging Notification Sender</name>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.bom.eap</groupId>
+                <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
+                <version>${version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.bom.eap</groupId>
+                <artifactId>jboss-javaee-6.0-with-tools</artifactId>
+                <version>${version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA-redhat-2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -28,61 +50,17 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jboss.bom.eap</groupId>
-                        <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
-                        <version>6.2.0.GA</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jboss.bom.eap</groupId>
-                        <artifactId>jboss-javaee-6.0-with-tools</artifactId>
-                        <version>6.2.0.GA</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jaxrs</artifactId>
-                    <version>2.3.7.Final-redhat-2</version>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
+            <properties>
+                <version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy>6.2.0.GA</version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy>
+                <version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools>6.2.0.GA</version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools>
+            </properties>
         </profile>
         <profile>
             <id>jboss-eap-6.3</id>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jboss.bom.eap</groupId>
-                        <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
-                        <version>6.3.0.GA</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jboss.bom.eap</groupId>
-                        <artifactId>jboss-javaee-6.0-with-tools</artifactId>
-                        <version>6.3.0.GA</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jaxrs</artifactId>
-                    <version>2.3.8.Final-redhat-3</version>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
+            <properties>
+                <version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy>6.3.0.GA</version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy>
+                <version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools>6.3.0.GA</version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools>
+            </properties>
         </profile>
     </profiles>
 
