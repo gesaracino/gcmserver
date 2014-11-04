@@ -61,7 +61,7 @@ public class DeviceRegistrationDatastore {
 		return deviceRegistrationsById.get(id);
 	}
 
-	public DeviceRegistration deleteRegisteredDevice(Long id) {
+	public DeviceRegistration deleteDeviceRegistration(Long id) {
 		DeviceRegistration removed = deviceRegistrationsById.remove(id);
 		return removed != null ? deviceRegistrationsByDeclaredDeviceId.remove(removed.getDeclaredDeviceId()) : null;
 	}

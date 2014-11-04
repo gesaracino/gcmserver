@@ -12,14 +12,14 @@
             <dependency>
                 <groupId>org.jboss.bom.eap</groupId>
                 <artifactId>jboss-javaee-6.0-with-resteasy</artifactId>
-                <version>${version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy}</version>
+                <version>${version.jboss.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.bom.eap</groupId>
                 <artifactId>jboss-javaee-6.0-with-tools</artifactId>
-                <version>${version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools}</version>
+                <version>${version.jboss.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -51,15 +51,13 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy>6.2.0.GA</version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy>
-                <version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools>6.2.0.GA</version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools>
+                <version.jboss.bom>6.2.0.GA</version.jboss.bom>
             </properties>
         </profile>
         <profile>
             <id>jboss-eap-6.3</id>
             <properties>
-                <version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy>6.3.0.GA</version.org.jboss.bom.eap.jboss-javaee-6.0-with-resteasy>
-                <version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools>6.3.0.GA</version.org.jboss.bom.eap.jboss-javaee-6.0-with-tools>
+                <version.jboss.bom>6.3.0.GA</version.jboss.bom>
             </properties>
         </profile>
     </profiles>

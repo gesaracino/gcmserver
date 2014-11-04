@@ -40,6 +40,6 @@ public class DeviceRegistrations {
 	@DELETE
 	@Path("{id}")
 	public DeviceRegistration deleteDeviceRegistration(@PathParam(value = "id") Long id) {
-		return datastore.deleteRegisteredDevice(id);
+		return datastore.deleteDeviceRegistration(id);
 	}
 }
