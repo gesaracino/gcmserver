@@ -2,8 +2,10 @@ package com.gesaracino.gcm.boundary;
 
 import com.gesaracino.gcm.control.DeviceRegistrationDatastore;
 import com.gesaracino.gcm.entity.DeviceRegistration;
-import org.jboss.resteasy.spi.validation.ValidateRequest;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -11,9 +13,10 @@ import java.util.List;
 
 @Path("/deviceRegistrations")
 @Produces(MediaType.APPLICATION_JSON)
-@ValidateRequest
+@Stateless
 public class DeviceRegistrations {
-	private DeviceRegistrationDatastore datastore = DeviceRegistrationDatastore.getInstance();
+    @EJB
+	private DeviceRegistrationDatastore datastore;
 	
 	@GET
 	public List<DeviceRegistration> getDeviceRegistrations() {
@@ -23,17 +26,19 @@ public class DeviceRegistrations {
 	@GET
 	@Path("{id}")
 	public DeviceRegistration getDeviceRegistration(@PathParam(value = "id") Long id) {
-		return datastore.getRegisteredDevice(id);
+		return datastore.getDeviceRegistration(id);
 	}
 	
 	@POST
-	public DeviceRegistration insertDeviceRegistration(@Valid DeviceRegistration deviceRegistration) {
+    @Interceptors({MethodParameterValidator.class})
+    public DeviceRegistration insertDeviceRegistration(@Valid DeviceRegistration deviceRegistration) {
 		return datastore.insertOrUpdateDeviceRegistration(deviceRegistration);
 	}
 	
 	@PUT
 	@Path("{id}")
-	public DeviceRegistration updateDeviceRegistration(@PathParam(value = "id") Long id, @Valid DeviceRegistration deviceRegistration) {
+    @Interceptors({MethodParameterValidator.class})
+    public DeviceRegistration updateDeviceRegistration(@PathParam(value = "id") Long id, @Valid DeviceRegistration deviceRegistration) {
 		return datastore.updateDeviceRegistration(id, deviceRegistration);
 	}
 	

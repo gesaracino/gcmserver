@@ -2,26 +2,18 @@ package com.gesaracino.gcm.control;
 
 import com.gesaracino.gcm.entity.DeviceRegistration;
 
+import javax.ejb.Singleton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+@Singleton
 public class DeviceRegistrationDatastore {
-	private static DeviceRegistrationDatastore instance;
-
 	private HashMap<String, DeviceRegistration> deviceRegistrationsByDeclaredDeviceId = new HashMap<String, DeviceRegistration>();
 	private HashMap<Long, DeviceRegistration> deviceRegistrationsById = new HashMap<Long, DeviceRegistration>();
-	
-	public static DeviceRegistrationDatastore getInstance() {
-		if (instance == null) {
-			instance = new DeviceRegistrationDatastore();
-		}
 
-		return instance;
-	}
-
-	public List<DeviceRegistration> getDeviceRegistrations() {
+    public List<DeviceRegistration> getDeviceRegistrations() {
 		return new ArrayList<DeviceRegistration>(deviceRegistrationsByDeclaredDeviceId.values());
 	}
 
@@ -57,7 +49,7 @@ public class DeviceRegistrationDatastore {
 		return updateDeviceRegistration(registeredDeviceRegistration.getId(), deviceRegistration);
 	}
 
-	public DeviceRegistration getRegisteredDevice(Long id) {
+	public DeviceRegistration getDeviceRegistration(Long id) {
 		return deviceRegistrationsById.get(id);
 	}
 
