@@ -10,37 +10,36 @@ import java.util.List;
 
 @Singleton
 public class DeviceRegistrationDatastore {
-	private HashMap<String, DeviceRegistration> deviceRegistrationsByDeclaredDeviceId = new HashMap<String, DeviceRegistration>();
+	private HashMap<String, DeviceRegistration> deviceRegistrationsByRegistrationId = new HashMap<String, DeviceRegistration>();
 	private HashMap<Long, DeviceRegistration> deviceRegistrationsById = new HashMap<Long, DeviceRegistration>();
 
     public List<DeviceRegistration> getDeviceRegistrations() {
-		return new ArrayList<DeviceRegistration>(deviceRegistrationsByDeclaredDeviceId.values());
+		return new ArrayList<DeviceRegistration>(deviceRegistrationsByRegistrationId.values());
 	}
 
 	public DeviceRegistration insertDeviceRegistration(DeviceRegistration deviceRegistration) {
-		if(deviceRegistrationsByDeclaredDeviceId.containsKey(deviceRegistration.getDeclaredDeviceId())) {
+		if(deviceRegistrationsByRegistrationId.containsKey(deviceRegistration.getRegistrationId())) {
 			throw new IllegalArgumentException("Device Registration already exists");
 		}
 		
 		deviceRegistration.setId(generateDeviceId());
-		deviceRegistrationsByDeclaredDeviceId.put(deviceRegistration.getDeclaredDeviceId(), deviceRegistration);
+		deviceRegistrationsByRegistrationId.put(deviceRegistration.getRegistrationId(), deviceRegistration);
 		deviceRegistrationsById.put(deviceRegistration.getId(), deviceRegistration);
 		return deviceRegistration;
 	}
 
 	public DeviceRegistration updateDeviceRegistration(Long id, DeviceRegistration deviceRegistration) {
-		DeviceRegistration persistentDeviceRegistration = deviceRegistrationsById.get(id);
-
-        if(persistentDeviceRegistration == null) {
-            throw new IllegalArgumentException("Device Registration doesn't exist");
-        }
-
-		persistentDeviceRegistration.setGcmRegistrationId(deviceRegistration.getGcmRegistrationId());
-		return persistentDeviceRegistration;
+        DeviceRegistration persistentDeviceRegistration = deviceRegistrationsById.get(id);
+        return makeUpdateDeviceRegistration(persistentDeviceRegistration.getId(), deviceRegistration);
 	}
+
+    public DeviceRegistration updateDeviceRegistrationByRegistrationId(String registrationId, DeviceRegistration deviceRegistration) {
+        DeviceRegistration persistentDeviceRegistration = deviceRegistrationsByRegistrationId.get(registrationId);
+        return makeUpdateDeviceRegistration(persistentDeviceRegistration.getId(), deviceRegistration);
+    }
 	
 	public DeviceRegistration insertOrUpdateDeviceRegistration(DeviceRegistration deviceRegistration) {
-		DeviceRegistration registeredDeviceRegistration = deviceRegistrationsByDeclaredDeviceId.get(deviceRegistration.getDeclaredDeviceId());
+		DeviceRegistration registeredDeviceRegistration = deviceRegistrationsByRegistrationId.get(deviceRegistration.getRegistrationId());
 		
 		if(registeredDeviceRegistration == null) {
 			return insertDeviceRegistration(deviceRegistration);
@@ -55,10 +54,26 @@ public class DeviceRegistrationDatastore {
 
 	public DeviceRegistration deleteDeviceRegistration(Long id) {
 		DeviceRegistration removed = deviceRegistrationsById.remove(id);
-		return removed != null ? deviceRegistrationsByDeclaredDeviceId.remove(removed.getDeclaredDeviceId()) : null;
+		return removed != null ? deviceRegistrationsByRegistrationId.remove(removed.getRegistrationId()) : null;
 	}
+
+    public DeviceRegistration deleteDeviceRegistrationByRegistrationId(String registrationId) {
+        DeviceRegistration removed = deviceRegistrationsByRegistrationId.remove(registrationId);
+        return removed != null ? deviceRegistrationsById.remove(removed.getId()) : null;
+    }
 	
 	private Long generateDeviceId() {
 		return deviceRegistrationsById.isEmpty() ? 1L : Collections.max(deviceRegistrationsById.keySet()) + 1;
 	}
+
+    private DeviceRegistration makeUpdateDeviceRegistration(Long id, DeviceRegistration deviceRegistration) {
+        DeviceRegistration persistentDeviceRegistration = deviceRegistrationsById.get(id);
+
+        if(persistentDeviceRegistration == null) {
+            throw new IllegalArgumentException("Device Registration doesn't exist");
+        }
+
+        persistentDeviceRegistration.setRegistrationId(deviceRegistration.getRegistrationId());
+        return persistentDeviceRegistration;
+    }
 }

@@ -6,10 +6,7 @@ public class DeviceRegistration {
 	private Long id;
 
 	@NotNull
-	private String declaredDeviceId;
-
-	@NotNull
-	private String gcmRegistrationId;
+	private String registrationId;
 
 	public DeviceRegistration() {
 		super();
@@ -23,25 +20,16 @@ public class DeviceRegistration {
 		this.id = id;
 	}
 
-	public String getDeclaredDeviceId() {
-		return declaredDeviceId;
+	public String getRegistrationId() {
+		return registrationId;
 	}
 
-	public void setDeclaredDeviceId(String declaredDeviceId) {
-		this.declaredDeviceId = declaredDeviceId;
-	}
-
-	public String getGcmRegistrationId() {
-		return gcmRegistrationId;
-	}
-
-	public void setGcmRegistrationId(String gcmRegistrationId) {
-		this.gcmRegistrationId = gcmRegistrationId;
+	public void setRegistrationId(String registrationId) {
+		this.registrationId = registrationId;
 	}
 
     @Override
 	public String toString() {
-		return "Device [id=" + id + ", declaredDeviceId=" + declaredDeviceId
-				+ ", gcmRegistrationId=" + gcmRegistrationId + "]";
+		return "Device [id=" + id + ", registrationId=" + registrationId + "]";
 	}
 }

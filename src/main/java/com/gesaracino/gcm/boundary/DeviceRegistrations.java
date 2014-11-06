@@ -1,7 +1,9 @@
 package com.gesaracino.gcm.boundary;
 
 import com.gesaracino.gcm.control.DeviceRegistrationDatastore;
+import com.gesaracino.gcm.control.MessageSender;
 import com.gesaracino.gcm.entity.DeviceRegistration;
+import com.gesaracino.gcm.entity.Message;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,8 +19,8 @@ import java.util.List;
 public class DeviceRegistrations {
     @EJB
 	private DeviceRegistrationDatastore datastore;
-	
-	@GET
+
+    @GET
 	public List<DeviceRegistration> getDeviceRegistrations() {
 		return datastore.getDeviceRegistrations();
 	}
