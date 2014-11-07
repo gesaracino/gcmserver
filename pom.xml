@@ -23,6 +23,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.bom.eap</groupId>
+                <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+                <version>${version.jboss.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -57,6 +64,21 @@
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

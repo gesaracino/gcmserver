@@ -15,51 +15,22 @@
  */
 package com.google.android.gcm.server;
 
-import static com.google.android.gcm.server.Constants.GCM_SEND_ENDPOINT;
-import static com.google.android.gcm.server.Constants.JSON_CANONICAL_IDS;
-import static com.google.android.gcm.server.Constants.JSON_ERROR;
-import static com.google.android.gcm.server.Constants.JSON_FAILURE;
-import static com.google.android.gcm.server.Constants.JSON_MESSAGE_ID;
-import static com.google.android.gcm.server.Constants.JSON_MULTICAST_ID;
-import static com.google.android.gcm.server.Constants.JSON_PAYLOAD;
-import static com.google.android.gcm.server.Constants.JSON_REGISTRATION_IDS;
-import static com.google.android.gcm.server.Constants.JSON_RESULTS;
-import static com.google.android.gcm.server.Constants.JSON_SUCCESS;
-import static com.google.android.gcm.server.Constants.PARAM_COLLAPSE_KEY;
-import static com.google.android.gcm.server.Constants.PARAM_DELAY_WHILE_IDLE;
-import static com.google.android.gcm.server.Constants.PARAM_DRY_RUN;
-import static com.google.android.gcm.server.Constants.PARAM_PAYLOAD_PREFIX;
-import static com.google.android.gcm.server.Constants.PARAM_REGISTRATION_ID;
-import static com.google.android.gcm.server.Constants.PARAM_RESTRICTED_PACKAGE_NAME;
-import static com.google.android.gcm.server.Constants.PARAM_TIME_TO_LIVE;
-import static com.google.android.gcm.server.Constants.TOKEN_CANONICAL_REG_ID;
-import static com.google.android.gcm.server.Constants.TOKEN_ERROR;
-import static com.google.android.gcm.server.Constants.TOKEN_MESSAGE_ID;
-
 import com.google.android.gcm.server.Result.Builder;
-
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.google.android.gcm.server.Constants.*;
 
 /**
  * Helper class to send messages to the GCM service using an API Key.
