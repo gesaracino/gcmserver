@@ -27,8 +27,12 @@ public class DeviceRegistrationDatastore {
 	}
 
 	public DeviceRegistration updateDeviceRegistration(Long id, DeviceRegistration deviceRegistration) {
-        deviceRegistration.setId(id);
-        return entityManager.merge(deviceRegistration);
+        DeviceRegistration persistent = entityManager.
+                createQuery("select d from DeviceRegistration d where d.id=:id", DeviceRegistration.class).
+                setParameter("id", id).
+                getSingleResult();
+        persistent.setRegistrationId(deviceRegistration.getRegistrationId());
+        return persistent;
 	}
 
     public DeviceRegistration updateDeviceRegistrationByRegistrationId(String registrationId, DeviceRegistration deviceRegistration) {
@@ -36,7 +40,8 @@ public class DeviceRegistrationDatastore {
                 createQuery("select d from DeviceRegistration d where d.registrationId=:registrationId", DeviceRegistration.class).
                 setParameter("registrationId", registrationId).
                 getSingleResult();
-        return updateDeviceRegistration(persistent.getId(), deviceRegistration);
+        persistent.setRegistrationId(deviceRegistration.getRegistrationId());
+        return persistent;
     }
 	
 	public DeviceRegistration insertOrUpdateDeviceRegistration(DeviceRegistration deviceRegistration) {
