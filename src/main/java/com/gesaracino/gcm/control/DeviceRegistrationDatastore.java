@@ -31,7 +31,6 @@ public class DeviceRegistrationDatastore {
                 createQuery("select d from DeviceRegistration d where d.id=:id", DeviceRegistration.class).
                 setParameter("id", id).
                 getSingleResult();
-        persistent.setDeclaredDeviceId(deviceRegistration.getDeclaredDeviceId());
         persistent.setRegistrationId(deviceRegistration.getRegistrationId());
         return persistent;
 	}
