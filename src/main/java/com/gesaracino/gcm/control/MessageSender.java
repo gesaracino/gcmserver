@@ -1,11 +1,16 @@
 package com.gesaracino.gcm.control;
 
 import com.gesaracino.gcm.entity.DeviceRegistration;
+import com.gesaracino.gcm.entity.Property;
 import com.google.android.gcm.server.*;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,83 +23,109 @@ import java.util.concurrent.Executors;
 
 @Stateless
 public class MessageSender {
-    private static final String SERVER_API_KEY = "AIzaSyCWANqNXq72mWW44dVtsFg4hF44F2GxdQ8";
-    private static final int MULTICAST_SIZE = 1000;
-    private static final int RETRIES = 3;
-    private static final String DATA_MESSAGE_KEY = "message";
-    private static final Executor THREAD_POOL = Executors.newFixedThreadPool(5);
+    @EJB
+    private PropertyRepository propertyRepository;
 
     @EJB
-    private DeviceRegistrationDatastore datastore;
+    private DeviceRegistrationRepository deviceRegistrationRepository;
 
     public void send(Long deviceRegistrationId, String text) {
         send(Arrays.asList(new Long[] {deviceRegistrationId}), text);
     }
 
     public void send(List<Long> deviceRegistrationIds, String text) {
+        int multicastSize = Integer.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.MULTICAST_SIZE));
+        int nThreads = Integer.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.THREADS));
         ArrayList<String> partialRegistrationIds = new ArrayList<String>();
 
+        Executor threadPool = Executors.newFixedThreadPool(nThreads);
+
         for(int i = 0; i < deviceRegistrationIds.size(); i ++) {
-            DeviceRegistration deviceRegistration = datastore.getDeviceRegistration(deviceRegistrationIds.get(i));
+            DeviceRegistration deviceRegistration = deviceRegistrationRepository.getDeviceRegistration(deviceRegistrationIds.get(i));
             partialRegistrationIds.add(deviceRegistration.getRegistrationId());
 
-            if(partialRegistrationIds.size() == MULTICAST_SIZE || (i + 1) == deviceRegistrationIds.size()) {
-                asyncSend(partialRegistrationIds, text);
+            if(partialRegistrationIds.size() == multicastSize || (i + 1) == deviceRegistrationIds.size()) {
+                threadPool.execute(new MessageSenderWorker(new ArrayList<String>(partialRegistrationIds), text));
                 partialRegistrationIds.clear();
             }
         }
     }
 
-    private void asyncSend(List<String> gcmRegistrationIds, String text) {
-        final String textMessage = new String(text);
-        final ArrayList<String> registrationIds = new ArrayList<String>(gcmRegistrationIds);
+    private class MessageSenderWorker implements Runnable {
+        private List<String> registrationIds;
+        private String text;
 
-        THREAD_POOL.execute(new Runnable() {
-            public void run() {
-                Message message = new Message.Builder().collapseKey("1").
-                        timeToLive(3).
-                        delayWhileIdle(true).
-                        addData(DATA_MESSAGE_KEY, textMessage).
-                        build();
-                MulticastResult multicastResult;
+        private MessageSenderWorker(List<String> registrationIds, String text) {
+            this.registrationIds = registrationIds;
+            this.text = text;
+        }
 
-                try {
-                    multicastResult = new Sender(SERVER_API_KEY).send(message, registrationIds, RETRIES);
-                } catch (IOException e) {
-                    System.out.println("Error posting messages");
-                    return;
-                }
+        @Override
+        public void run() {
+            String dataMessageKey = propertyRepository.getPropertyValue(Property.PropertyName.DATA_MESSAGE_KEY);
 
-                // analyze the results
-                for (int i = 0; i < registrationIds.size(); i ++) {
-                    String regId = registrationIds.get(i);
-                    Result result = multicastResult.getResults().get(i);
-                    String messageId = result.getMessageId();
+            Message message = new Message.Builder().collapseKey("1").
+                    timeToLive(3).
+                    delayWhileIdle(true).
+                    addData(dataMessageKey, text).
+                    build();
+            MulticastResult multicastResult;
 
-                    if (messageId != null) {
-                        System.out.println("Succesfully sent message to device: " + regId + "; messageId = " + messageId);
-                        String canonicalRegId = result.getCanonicalRegistrationId();
+            try {
+                String serverApiKey = propertyRepository.getPropertyValue(Property.PropertyName.SERVER_API_KEY);
+                int retries = Integer.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.RETRIES));
+                String useHttpProxy = propertyRepository.getPropertyValue(Property.PropertyName.USE_HTTP_PROXY);
+                Sender sender = "Y".equals(useHttpProxy) ? new HttpProxySender(serverApiKey) : new Sender(serverApiKey);
+                multicastResult = sender.send(message, registrationIds, retries);
+            } catch (IOException e) {
+                System.out.println("Error posting messages");
+                return;
+            }
 
-                        if (canonicalRegId != null) {
-                            // same device has more than on registration id: update it
-                            System.out.println("canonicalRegId " + canonicalRegId);
-                            DeviceRegistration deviceRegistration = new DeviceRegistration();
-                            deviceRegistration.setRegistrationId(canonicalRegId);
-                            datastore.updateDeviceRegistrationByRegistrationId(regId, deviceRegistration);
-                        }
+            // analyze the results
+            for (int i = 0; i < registrationIds.size(); i ++) {
+                String regId = registrationIds.get(i);
+                Result result = multicastResult.getResults().get(i);
+                String messageId = result.getMessageId();
+
+                if (messageId != null) {
+                    System.out.println("Succesfully sent message to device: " + regId + "; messageId = " + messageId);
+                    String canonicalRegId = result.getCanonicalRegistrationId();
+
+                    if (canonicalRegId != null) {
+                        // same device has more than on registration id: update it
+                        System.out.println("canonicalRegId " + canonicalRegId);
+                        DeviceRegistration deviceRegistration = new DeviceRegistration();
+                        deviceRegistration.setRegistrationId(canonicalRegId);
+                        deviceRegistrationRepository.updateDeviceRegistrationByRegistrationId(regId, deviceRegistration);
+                    }
+                } else {
+                    String error = result.getErrorCodeName();
+
+                    if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
+                        // application has been removed from device - unregister it
+                        System.out.println("Unregistered device: " + regId);
+                        deviceRegistrationRepository.deleteDeviceRegistrationByRegistrationId(regId);
                     } else {
-                        String error = result.getErrorCodeName();
-
-                        if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
-                            // application has been removed from device - unregister it
-                            System.out.println("Unregistered device: " + regId);
-                            datastore.deleteDeviceRegistrationByRegistrationId(regId);
-                        } else {
-                            System.out.println("Error sending message to " + regId + ": " + error);
-                        }
+                        System.out.println("Error sending message to " + regId + ": " + error);
                     }
                 }
             }
-        });
+        }
+    }
+
+    private class HttpProxySender extends Sender {
+        private HttpProxySender(String key) {
+            super(key);
+        }
+
+        @Override
+        protected HttpURLConnection getConnection(String url) throws IOException {
+            String proxyHostName = propertyRepository.getPropertyValue(Property.PropertyName.HTTP_PROXY_HOSTNAME);
+            int proxyPort = Integer.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.HTTP_PROXY_PORT));
+
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHostName, proxyPort));
+            return (HttpURLConnection) new URL(url).openConnection(proxy);
+        }
     }
 }

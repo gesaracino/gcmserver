@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Stateless
-public class DeviceRegistrationDatastore {
+public class DeviceRegistrationRepository {
 	private HashMap<String, DeviceRegistration> deviceRegistrationsByRegistrationId = new HashMap<String, DeviceRegistration>();
 	private HashMap<Long, DeviceRegistration> deviceRegistrationsById = new HashMap<Long, DeviceRegistration>();
 
