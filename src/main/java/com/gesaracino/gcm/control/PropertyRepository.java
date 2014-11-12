@@ -16,20 +16,21 @@ public class PropertyRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private HashMap<String, Property> PropertyCache = new HashMap<String, Property>();
+    private HashMap<String, String> propertyCache = new HashMap<String, String>();
 
     public String getPropertyValue(String name) {
-        Property ret = PropertyCache.get(name);
+        String ret = propertyCache.get(name);
 
         if(ret == null) {
             ret = entityManager.
                     createQuery("select p from Property p where p.name=:name", Property.class).
                     setParameter("name", name).
-                    getSingleResult();
-            PropertyCache.put(name, ret);
+                    getSingleResult().
+                    getValue();
+            propertyCache.put(name, ret);
         }
 
-        return ret.getValue();
+        return ret;
     }
 
     public String getPropertyValue(Property.PropertyName propertyName) {
