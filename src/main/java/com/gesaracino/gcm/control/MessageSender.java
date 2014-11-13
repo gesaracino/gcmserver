@@ -95,9 +95,9 @@ public class MessageSender {
                     if (canonicalRegId != null) {
                         // same device has more than on registration id: update it
                         System.out.println("canonicalRegId " + canonicalRegId);
-                        DeviceRegistration deviceRegistration = new DeviceRegistration();
+                        DeviceRegistration deviceRegistration = deviceRegistrationRepository.getDeviceRegistrationByRegistrationId(regId);
                         deviceRegistration.setRegistrationId(canonicalRegId);
-                        deviceRegistrationRepository.updateDeviceRegistrationByRegistrationId(regId, deviceRegistration);
+                        deviceRegistrationRepository.updateDeviceRegistration(deviceRegistration.getId(), deviceRegistration);
                     }
                 } else {
                     String error = result.getErrorCodeName();

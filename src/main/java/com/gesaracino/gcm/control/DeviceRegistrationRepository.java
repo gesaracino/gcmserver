@@ -11,10 +11,7 @@ import java.util.List;
 
 @Stateless
 public class DeviceRegistrationRepository {
-	private HashMap<String, DeviceRegistration> deviceRegistrationsByRegistrationId = new HashMap<String, DeviceRegistration>();
-	private HashMap<Long, DeviceRegistration> deviceRegistrationsById = new HashMap<Long, DeviceRegistration>();
-
-    @PersistenceContext
+	@PersistenceContext
     private EntityManager entityManager;
 
     public List<DeviceRegistration> getDeviceRegistrations() {
@@ -34,14 +31,6 @@ public class DeviceRegistrationRepository {
         retrieved.setRegistrationId(deviceRegistration.getRegistrationId());
         return new DeviceRegistration(entityManager.merge(retrieved));
 	}
-
-    public DeviceRegistration updateDeviceRegistrationByRegistrationId(String registrationId, DeviceRegistration deviceRegistration) {
-        DeviceRegistration retrieved = entityManager.
-                createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
-                setParameter("registrationId", registrationId).
-                getSingleResult();
-        return updateDeviceRegistration(retrieved.getId(), deviceRegistration);
-    }
 
 	public DeviceRegistration insertOrUpdateDeviceRegistration(DeviceRegistration deviceRegistration) {
         DeviceRegistration retrieved = null;
@@ -65,6 +54,13 @@ public class DeviceRegistrationRepository {
                 getSingleResult();
 	}
 
+    public DeviceRegistration getDeviceRegistrationByRegistrationId(String registrationId) {
+        return entityManager.
+                createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
+                setParameter("registrationId", registrationId).
+                getSingleResult();
+    }
+
 	public DeviceRegistration deleteDeviceRegistration(Long id) {
         DeviceRegistration retrieved = getDeviceRegistration(id);
         entityManager.detach(retrieved);
@@ -72,11 +68,11 @@ public class DeviceRegistrationRepository {
 	}
 
     public DeviceRegistration deleteDeviceRegistrationByRegistrationId(String registrationId) {
-        DeviceRegistration persistent = entityManager.
+        DeviceRegistration retrieved = entityManager.
                 createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
                 setParameter("registrationId", registrationId).
                 getSingleResult();
-        entityManager.detach(persistent);
-        return persistent;
+        entityManager.detach(retrieved);
+        return retrieved;
     }
 }
