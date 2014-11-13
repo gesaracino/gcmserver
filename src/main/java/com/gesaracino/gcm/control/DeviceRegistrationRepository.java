@@ -18,62 +18,62 @@ public class DeviceRegistrationRepository {
     private EntityManager entityManager;
 
     public List<DeviceRegistration> getDeviceRegistrations() {
-		return entityManager.createQuery("select d from DeviceRegistration d", DeviceRegistration.class).getResultList();
+        return entityManager.createNamedQuery("DeviceRegistration.GetDeviceRegistrations", DeviceRegistration.class).getResultList();
 	}
 
 	public DeviceRegistration insertDeviceRegistration(DeviceRegistration deviceRegistration) {
 		entityManager.persist(deviceRegistration);
-        return deviceRegistration;
+        return new DeviceRegistration(deviceRegistration);
 	}
 
 	public DeviceRegistration updateDeviceRegistration(Long id, DeviceRegistration deviceRegistration) {
-        DeviceRegistration persistent = entityManager.
-                createQuery("select d from DeviceRegistration d where d.id=:id", DeviceRegistration.class).
+        DeviceRegistration retrieved = entityManager.
+                createNamedQuery("DeviceRegistration.GetById", DeviceRegistration.class).
                 setParameter("id", id).
                 getSingleResult();
-        persistent.setRegistrationId(deviceRegistration.getRegistrationId());
-        return persistent;
+        retrieved.setRegistrationId(deviceRegistration.getRegistrationId());
+        return new DeviceRegistration(entityManager.merge(retrieved));
 	}
 
     public DeviceRegistration updateDeviceRegistrationByRegistrationId(String registrationId, DeviceRegistration deviceRegistration) {
-        DeviceRegistration persistent = entityManager.
-                createQuery("select d from DeviceRegistration d where d.registrationId=:registrationId", DeviceRegistration.class).
+        DeviceRegistration retrieved = entityManager.
+                createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
                 setParameter("registrationId", registrationId).
                 getSingleResult();
-        return updateDeviceRegistration(persistent.getId(), deviceRegistration);
+        return updateDeviceRegistration(retrieved.getId(), deviceRegistration);
     }
 
 	public DeviceRegistration insertOrUpdateDeviceRegistration(DeviceRegistration deviceRegistration) {
-        DeviceRegistration persistent = null;
+        DeviceRegistration retrieved = null;
 
         try {
-            persistent = entityManager.
-                    createQuery("select d from DeviceRegistration d where d.registrationId=:registrationId", DeviceRegistration.class).
+            retrieved = entityManager.
+                    createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
                     setParameter("registrationId", deviceRegistration.getRegistrationId()).
                     getSingleResult();
         } catch (NoResultException e) {
             return insertDeviceRegistration(deviceRegistration);
         }
 
-		return updateDeviceRegistration(persistent.getId(), deviceRegistration);
+		return updateDeviceRegistration(retrieved.getId(), deviceRegistration);
 	}
 
 	public DeviceRegistration getDeviceRegistration(Long id) {
 		return entityManager.
-                createQuery("select d from DeviceRegistration d where d.id=:id", DeviceRegistration.class).
+                createNamedQuery("DeviceRegistration.GetById", DeviceRegistration.class).
                 setParameter("id", id).
                 getSingleResult();
 	}
 
 	public DeviceRegistration deleteDeviceRegistration(Long id) {
-        DeviceRegistration persistent = getDeviceRegistration(id);
-        entityManager.detach(persistent);
-        return persistent;
+        DeviceRegistration retrieved = getDeviceRegistration(id);
+        entityManager.detach(retrieved);
+        return retrieved;
 	}
 
     public DeviceRegistration deleteDeviceRegistrationByRegistrationId(String registrationId) {
         DeviceRegistration persistent = entityManager.
-                createQuery("select d from DeviceRegistration d where d.registrationId=:registrationId", DeviceRegistration.class).
+                createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
                 setParameter("registrationId", registrationId).
                 getSingleResult();
         entityManager.detach(persistent);

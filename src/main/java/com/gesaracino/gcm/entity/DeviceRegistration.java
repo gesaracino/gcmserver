@@ -5,6 +5,11 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "DEVICE_REGISTRATIONS")
+@NamedQueries({
+        @NamedQuery(name = "DeviceRegistration.GetDeviceRegistrations", query = "select new DeviceRegistration(d) from DeviceRegistration d"),
+        @NamedQuery(name = "DeviceRegistration.GetById", query = "select new DeviceRegistration(d) from DeviceRegistration d where d.id=:id"),
+        @NamedQuery(name = "DeviceRegistration.GetByRegistrationId", query = "select new DeviceRegistration(d) from DeviceRegistration d where d.registrationId=:registrationId")
+})
 public class DeviceRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SeqDeviceRegistrationIdGen")
@@ -24,7 +29,14 @@ public class DeviceRegistration {
 		super();
 	}
 
-	public Long getId() {
+    public DeviceRegistration(DeviceRegistration deviceRegistration) {
+        super();
+        id = deviceRegistration.getId();
+        declaredDeviceId = deviceRegistration.getDeclaredDeviceId();
+        registrationId = deviceRegistration.getRegistrationId();
+    }
+
+    public Long getId() {
 		return id;
 	}
 

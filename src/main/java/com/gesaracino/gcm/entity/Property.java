@@ -46,6 +46,16 @@ public class Property {
     @Size(min = 1)
     private String value;
 
+    public Property() {
+        super();
+    }
+
+    public Property(Property property) {
+        super();
+        name = property.getName();
+        value = property.getValue();
+    }
+
     public String getName() {
         return name;
     }
