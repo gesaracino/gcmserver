@@ -33,7 +33,7 @@ public class DeviceRegistrations {
     @Consumes(MediaType.APPLICATION_JSON)
     @Interceptors({MethodParameterValidator.class})
     public DeviceRegistration insertDeviceRegistration(@Valid DeviceRegistration deviceRegistration) {
-		return datastore.insertOrUpdateDeviceRegistration(deviceRegistration);
+		return datastore.insertDeviceRegistrationIfNotExists(deviceRegistration);
 	}
 	
 	@PUT

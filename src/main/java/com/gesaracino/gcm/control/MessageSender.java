@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 
 /**
  * Created by Gerardo Saracino on 05/11/2014.
@@ -78,7 +79,7 @@ public class MessageSender {
                 Sender sender = "Y".equals(useHttpProxy) ? new HttpProxySender(serverApiKey) : new Sender(serverApiKey);
                 multicastResult = sender.send(message, registrationIds, retries);
             } catch (IOException e) {
-                System.out.println("Error posting messages");
+                //LOGGER.log(Level.FINE, "Error posting messages", e);
                 return;
             }
 
@@ -89,25 +90,23 @@ public class MessageSender {
                 String messageId = result.getMessageId();
 
                 if (messageId != null) {
-                    System.out.println("Succesfully sent message to device: " + regId + "; messageId = " + messageId);
+                    //LOGGER.log(Level.FINE, "Succesfully sent message to device: " + regId + "; messageId = " + messageId);
                     String canonicalRegId = result.getCanonicalRegistrationId();
 
                     if (canonicalRegId != null) {
                         // same device has more than on registration id: update it
-                        System.out.println("canonicalRegId " + canonicalRegId);
-                        DeviceRegistration deviceRegistration = deviceRegistrationRepository.getDeviceRegistrationByRegistrationId(regId);
-                        deviceRegistration.setRegistrationId(canonicalRegId);
-                        deviceRegistrationRepository.updateDeviceRegistration(deviceRegistration.getId(), deviceRegistration);
+                        //LOGGER.log(Level.FINE, "canonicalRegId " + canonicalRegId);
+                        deviceRegistrationRepository.updateRegistrationId(regId, canonicalRegId);
                     }
                 } else {
                     String error = result.getErrorCodeName();
 
                     if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
                         // application has been removed from device - unregister it
-                        System.out.println("Unregistered device: " + regId);
+                        //LOGGER.log(Level.FINE, "Unregistered device: " + regId);
                         deviceRegistrationRepository.deleteDeviceRegistrationByRegistrationId(regId);
                     } else {
-                        System.out.println("Error sending message to " + regId + ": " + error);
+                        //LOGGER.log(Level.FINE, "Error sending message to " + regId + ": " + error);
                     }
                 }
             }
