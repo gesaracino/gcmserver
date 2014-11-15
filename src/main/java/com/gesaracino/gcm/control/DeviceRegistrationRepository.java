@@ -1,15 +1,20 @@
 package com.gesaracino.gcm.control;
 
-import com.gesaracino.gcm.entity.DeviceRegistration;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.gesaracino.gcm.entity.DeviceRegistration;
 
 @Stateless
 public class DeviceRegistrationRepository {
+	private static final Logger LOGGER = Logger.getLogger(DeviceRegistrationRepository.class);
+	
 	@PersistenceContext
     private EntityManager entityManager;
 
@@ -18,8 +23,9 @@ public class DeviceRegistrationRepository {
 	}
 
 	public DeviceRegistration insertDeviceRegistration(DeviceRegistration deviceRegistration) {
+		LOGGER.info("Persisting Device Registration: " + deviceRegistration);
 		entityManager.persist(deviceRegistration);
-        return new DeviceRegistration(deviceRegistration);
+		return new DeviceRegistration(deviceRegistration);
 	}
 
 	public DeviceRegistration updateDeviceRegistration(Long id, DeviceRegistration deviceRegistration) {

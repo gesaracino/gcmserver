@@ -1,11 +1,5 @@
 package com.gesaracino.gcm.control;
 
-import com.gesaracino.gcm.entity.DeviceRegistration;
-import com.gesaracino.gcm.entity.Property;
-import com.google.android.gcm.server.*;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -16,7 +10,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import org.apache.log4j.Logger;
+
+import com.gesaracino.gcm.entity.DeviceRegistration;
+import com.gesaracino.gcm.entity.Property;
+import com.google.android.gcm.server.Constants;
+import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.MulticastResult;
+import com.google.android.gcm.server.Result;
+import com.google.android.gcm.server.Sender;
 
 /**
  * Created by Gerardo Saracino on 05/11/2014.
@@ -24,6 +30,8 @@ import java.util.logging.Level;
 
 @Stateless
 public class MessageSender {
+	private static final Logger LOGGER = Logger.getLogger(MessageSender.class);
+	
     @EJB
     private PropertyRepository propertyRepository;
 
@@ -35,6 +43,7 @@ public class MessageSender {
     }
 
     public void send(List<Long> deviceRegistrationIds, String text) {
+    	LOGGER.info("Sending message with text: \"" + text + "\" to devices with Device Registration ids: " + deviceRegistrationIds);
         int multicastSize = Integer.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.MULTICAST_SIZE));
         int nThreads = Integer.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.THREADS));
         ArrayList<String> partialRegistrationIds = new ArrayList<String>();
@@ -79,7 +88,7 @@ public class MessageSender {
                 Sender sender = "Y".equals(useHttpProxy) ? new HttpProxySender(serverApiKey) : new Sender(serverApiKey);
                 multicastResult = sender.send(message, registrationIds, retries);
             } catch (IOException e) {
-                //LOGGER.log(Level.FINE, "Error posting messages", e);
+                LOGGER.error(e.getMessage(), e);
                 return;
             }
 
@@ -90,12 +99,12 @@ public class MessageSender {
                 String messageId = result.getMessageId();
 
                 if (messageId != null) {
-                    //LOGGER.log(Level.FINE, "Succesfully sent message to device: " + regId + "; messageId = " + messageId);
+                    LOGGER.info("Succesfully sent message to device: " + regId + "; messageId = " + messageId);
                     String canonicalRegId = result.getCanonicalRegistrationId();
 
                     if (canonicalRegId != null) {
                         // same device has more than on registration id: update it
-                        //LOGGER.log(Level.FINE, "canonicalRegId " + canonicalRegId);
+                        LOGGER.info("canonicalRegId " + canonicalRegId);
                         deviceRegistrationRepository.updateRegistrationId(regId, canonicalRegId);
                     }
                 } else {
@@ -103,10 +112,10 @@ public class MessageSender {
 
                     if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
                         // application has been removed from device - unregister it
-                        //LOGGER.log(Level.FINE, "Unregistered device: " + regId);
+                        LOGGER.warn("Unregistered device: " + regId);
                         deviceRegistrationRepository.deleteDeviceRegistrationByRegistrationId(regId);
                     } else {
-                        //LOGGER.log(Level.FINE, "Error sending message to " + regId + ": " + error);
+                        LOGGER.warn("Error sending message to " + regId + ": " + error);
                     }
                 }
             }
