@@ -1,5 +1,12 @@
 package com.gesaracino.gcm.control;
 
+import com.gesaracino.gcm.entity.DeviceRegistration;
+import com.gesaracino.gcm.entity.Property;
+import com.google.android.gcm.server.*;
+import org.apache.log4j.Logger;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -10,19 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-
-import org.apache.log4j.Logger;
-
-import com.gesaracino.gcm.entity.DeviceRegistration;
-import com.gesaracino.gcm.entity.Property;
-import com.google.android.gcm.server.Constants;
-import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.MulticastResult;
-import com.google.android.gcm.server.Result;
-import com.google.android.gcm.server.Sender;
 
 /**
  * Created by Gerardo Saracino on 05/11/2014.
