@@ -67,10 +67,14 @@ public class MessageSender {
         @Override
         public void run() {
             String dataMessageKey = propertyRepository.getPropertyValue(Property.PropertyName.DATA_MESSAGE_KEY);
+            String collapseKey = propertyRepository.getPropertyValue(Property.PropertyName.COLLAPSE_KEY);
+            int timeToLive = Integer.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.TIME_TO_LIVE));
+            boolean delayWhileIdle = Boolean.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.DELAY_WHILE_IDLE));
 
-            Message message = new Message.Builder().collapseKey("1").
-                    timeToLive(3).
-                    delayWhileIdle(true).
+            Message message = new Message.Builder().
+                    collapseKey(collapseKey).
+                    timeToLive(timeToLive).
+                    delayWhileIdle(delayWhileIdle).
                     addData(dataMessageKey, text).
                     build();
             MulticastResult multicastResult;
@@ -78,8 +82,8 @@ public class MessageSender {
             try {
                 String serverApiKey = propertyRepository.getPropertyValue(Property.PropertyName.SERVER_API_KEY);
                 int retries = Integer.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.RETRIES));
-                String useHttpProxy = propertyRepository.getPropertyValue(Property.PropertyName.USE_HTTP_PROXY);
-                Sender sender = "Y".equals(useHttpProxy) ? new HttpProxySender(serverApiKey) : new Sender(serverApiKey);
+                boolean useHttpProxy = Boolean.valueOf(propertyRepository.getPropertyValue(Property.PropertyName.USE_HTTP_PROXY));
+                Sender sender = useHttpProxy ? new HttpProxySender(serverApiKey) : new Sender(serverApiKey);
                 multicastResult = sender.send(message, registrationIds, retries);
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);

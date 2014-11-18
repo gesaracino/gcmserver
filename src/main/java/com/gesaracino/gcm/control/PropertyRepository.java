@@ -23,10 +23,9 @@ public class PropertyRepository {
 
         if(ret == null) {
             ret = entityManager.
-                    createQuery("select p from Property p where p.name=:name", Property.class).
+                    createQuery("select p.value from Property p where p.name=:name", String.class).
                     setParameter("name", name).
-                    getSingleResult().
-                    getValue();
+                    getSingleResult();
             propertyCache.put(name, ret);
         }
 

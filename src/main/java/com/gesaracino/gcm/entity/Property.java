@@ -22,7 +22,10 @@ public class Property {
         MULTICAST_SIZE("multicast.size"),
         USE_HTTP_PROXY("use.http.proxy"),
         DATA_MESSAGE_KEY("data.message.key"),
-        THREADS("threads");
+        THREADS("threads"),
+        COLLAPSE_KEY("collapse.key"),
+        TIME_TO_LIVE("time.to.live"),
+        DELAY_WHILE_IDLE("delay.while.idle");
 
         private String value;
 
