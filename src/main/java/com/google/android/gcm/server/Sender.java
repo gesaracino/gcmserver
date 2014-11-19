@@ -85,7 +85,7 @@ public class Sender {
         boolean tryAgain;
         do {
             attempt++;
-            LOGGER.info("Attempt #" + attempt + " to send message " + message + " to regIds " + registrationId);
+            LOGGER.debug("Attempt #" + attempt + " to send message " + message + " to regIds " + registrationId);
             result = sendNoRetry(message, registrationId);
             tryAgain = result == null && attempt <= retries;
             if (tryAgain) {
@@ -151,11 +151,11 @@ public class Sender {
             conn = post(GCM_SEND_ENDPOINT, requestBody);
             status = conn.getResponseCode();
         } catch (IOException e) {
-            LOGGER.info("IOException posting to GCM", e);
+            LOGGER.debug("IOException posting to GCM", e);
             return null;
         }
         if (status / 100 == 5) {
-            LOGGER.info("GCM service is unavailable (status " + status + ")");
+            LOGGER.debug("GCM service is unavailable (status " + status + ")");
             return null;
         }
         String responseBody;
@@ -167,7 +167,7 @@ public class Sender {
                 // ignore the exception since it will thrown an InvalidRequestException
                 // anyways
                 responseBody = "N/A";
-                LOGGER.info("Exception reading response: ", e);
+                LOGGER.debug("Exception reading response: ", e);
             }
             throw new InvalidRequestException(status, responseBody);
         } else {
@@ -202,7 +202,7 @@ public class Sender {
                 }
             }
             Result result = builder.build();
-            LOGGER.info("Message created succesfully (" + result + ")");
+            LOGGER.debug("Message created succesfully (" + result + ")");
             return result;
         } else if (token.equals(TOKEN_ERROR)) {
             return new Result.Builder().errorCode(value).build();
@@ -242,7 +242,7 @@ public class Sender {
         do {
             multicastResult = null;
             attempt++;
-            LOGGER.info("Attempt #" + attempt + " to send message " + message + " to regIds " + unsentRegIds);
+            LOGGER.debug("Attempt #" + attempt + " to send message " + message + " to regIds " + unsentRegIds);
             try {
                 multicastResult = sendNoRetry(message, unsentRegIds);
             } catch (IOException e) {
@@ -251,7 +251,7 @@ public class Sender {
             }
             if (multicastResult != null) {
                 long multicastId = multicastResult.getMulticastId();
-                LOGGER.info("multicast_id on attempt # " + attempt + ": " + multicastId);
+                LOGGER.debug("multicast_id on attempt # " + attempt + ": " + multicastId);
                 multicastIds.add(multicastId);
                 unsentRegIds = updateStatus(unsentRegIds, results, multicastResult);
                 tryAgain = !unsentRegIds.isEmpty() && attempt <= retries;
@@ -360,7 +360,7 @@ public class Sender {
             conn = post(GCM_SEND_ENDPOINT, "application/json", requestBody);
             status = conn.getResponseCode();
         } catch (IOException e) {
-            LOGGER.info("IOException posting to GCM", e);
+            LOGGER.debug("IOException posting to GCM", e);
             return null;
         }
         String responseBody;
@@ -372,7 +372,7 @@ public class Sender {
                 // ignore the exception since it will thrown an InvalidRequestException
                 // anyways
                 responseBody = "N/A";
-                LOGGER.info("Exception reading response: ", e);
+                LOGGER.debug("Exception reading response: ", e);
             }
             throw new InvalidRequestException(status, responseBody);
         }
@@ -500,7 +500,7 @@ public class Sender {
         if (!url.startsWith("https://")) {
             LOGGER.warn("URL does not use https: " + url);
         }
-        LOGGER.info("Sending POST to " + url);
+        LOGGER.debug("Sending POST to " + url);
         LOGGER.trace("POST body: " + body);
         byte[] bytes = body.getBytes();
         HttpURLConnection conn = getConnection(url);
