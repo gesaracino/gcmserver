@@ -14,72 +14,65 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "PROPERTIES")
 public class Property {
-    public static enum PropertyName {
-        SERVER_API_KEY("server.api.key"),
-        HTTP_PROXY_HOSTNAME("http.proxy.hostname"),
-        HTTP_PROXY_PORT("http.proxy.port"),
-        RETRIES("retries"),
-        MULTICAST_SIZE("multicast.size"),
-        USE_HTTP_PROXY("use.http.proxy"),
-        DATA_MESSAGE_KEY("data.message.key"),
-        THREADS("threads"),
-        COLLAPSE_KEY("collapse.key"),
-        TIME_TO_LIVE("time.to.live"),
-        DELAY_WHILE_IDLE("delay.while.idle");
+	public static enum PropertyName {
+		SERVER_API_KEY("server.api.key"), HTTP_PROXY_HOSTNAME(
+				"http.proxy.hostname"), HTTP_PROXY_PORT("http.proxy.port"), RETRIES(
+				"retries"), MULTICAST_SIZE("multicast.size"), USE_HTTP_PROXY(
+				"use.http.proxy"), DATA_MESSAGE_KEY("data.message.key"), THREADS(
+				"threads"), COLLAPSE_KEY("collapse.key"), TIME_TO_LIVE(
+				"time.to.live"), DELAY_WHILE_IDLE("delay.while.idle");
 
-        private String value;
+		private String value;
 
-        PropertyName(String value) {
-            this.value = value;
-        }
+		PropertyName(String value) {
+			this.value = value;
+		}
 
-        public String getValue() {
-            return value;
-        }
-    }
+		public String getValue() {
+			return value;
+		}
+	}
 
-    @Id
-    @Column(name = "NAME")
-    @NotNull
-    @Size(min = 1)
-    private String name;
+	@Id
+	@Column(name = "NAME", nullable = false)
+	@NotNull
+	@Size(min = 1)
+	private String name;
 
-    @Column(name = "VALUE")
-    @NotNull
-    @Size(min = 1)
-    private String value;
+	@Column(name = "VALUE", nullable = false)
+	@NotNull
+	@Size(min = 1)
+	private String value;
 
-    public Property() {
-        super();
-    }
+	public Property() {
+		super();
+	}
 
-    public Property(Property property) {
-        super();
-        name = property.getName();
-        value = property.getValue();
-    }
+	public Property(Property property) {
+		super();
+		name = property.getName();
+		value = property.getValue();
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getValue() {
-        return value;
-    }
+	public String getValue() {
+		return value;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public void setValue(String value) {
+		this.value = value;
+	}
 
-    @Override
-    public String toString() {
-        return "Property{" +
-                "name='" + name + '\'' +
-                ", value='" + value + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Property{" + "name='" + name + '\'' + ", value='" + value
+				+ '\'' + '}';
+	}
 }
