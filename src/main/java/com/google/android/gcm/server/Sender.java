@@ -458,7 +458,9 @@ public class Sender {
     }
 
     class CustomParserException extends RuntimeException {
-        CustomParserException(String message) {
+        private static final long serialVersionUID = 1L;
+
+		CustomParserException(String message) {
             super(message);
         }
     }

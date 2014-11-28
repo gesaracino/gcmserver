@@ -24,7 +24,8 @@ import java.util.List;
  * Result of a GCM multicast message request .
  */
 public final class MulticastResult implements Serializable {
-
+  private static final long serialVersionUID = 1L;
+	
   private final int success;
   private final int failure;
   private final int canonicalIds;

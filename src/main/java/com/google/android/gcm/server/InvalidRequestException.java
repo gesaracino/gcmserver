@@ -23,7 +23,8 @@ import java.io.IOException;
  * This is equivalent to GCM posts that return an HTTP error different of 200.
  */
 public final class InvalidRequestException extends IOException {
-
+  private static final long serialVersionUID = 1L;
+	
   private final int status;
   private final String description;
 

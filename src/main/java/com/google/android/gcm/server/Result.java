@@ -44,7 +44,8 @@ import java.io.Serializable;
  * </pre>
  */
 public final class Result implements Serializable {
-
+  private static final long serialVersionUID = 1L;
+  
   private final String messageId;
   private final String canonicalRegistrationId;
   private final String errorCode;
