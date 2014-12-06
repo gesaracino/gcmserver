@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "DEVICE_REGISTRATIONS")
 @NamedQueries({
-		@NamedQuery(name = "DeviceRegistration.GetAll", query = "select new com.gesaracino.gcm.entity.DeviceRegistration(d) from DeviceRegistration d"),
+		@NamedQuery(name = "DeviceRegistration.GetAll", query = "select d from DeviceRegistration d"),
 		@NamedQuery(name = "DeviceRegistration.GetById", query = "select d from DeviceRegistration d where d.id=:id"),
 		@NamedQuery(name = "DeviceRegistration.GetByRegistrationId", query = "select d from DeviceRegistration d where d.registrationId=:registrationId"), })
 public class DeviceRegistration {
