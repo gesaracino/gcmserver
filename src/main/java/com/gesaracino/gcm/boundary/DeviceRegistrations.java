@@ -11,8 +11,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/deviceRegistrations")
 @Stateless
+@Path("/deviceRegistrations")
 @Produces(MediaType.APPLICATION_JSON)
 public class DeviceRegistrations {
     @EJB
