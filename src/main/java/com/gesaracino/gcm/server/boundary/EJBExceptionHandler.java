@@ -1,4 +1,4 @@
-package com.gesaracino.gcm.boundary;
+package com.gesaracino.gcm.server.boundary;
 
 import javax.ejb.EJBException;
 import javax.persistence.NoResultException;

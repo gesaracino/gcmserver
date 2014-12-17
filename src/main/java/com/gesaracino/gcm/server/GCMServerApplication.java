@@ -1,4 +1,4 @@
-package com.gesaracino.gcm;
+package com.gesaracino.gcm.server;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

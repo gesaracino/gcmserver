@@ -1,7 +1,7 @@
-package com.gesaracino.gcm.boundary;
+package com.gesaracino.gcm.server.boundary;
 
-import com.gesaracino.gcm.control.MessageSender;
-import com.gesaracino.gcm.entity.NotificationMessage;
+import com.gesaracino.gcm.server.control.MessageSender;
+import com.gesaracino.gcm.server.entity.NotificationMessage;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;

@@ -1,10 +1,11 @@
-package com.gesaracino.gcm.control;
+package com.gesaracino.gcm.server.control;
 
-import com.gesaracino.gcm.entity.Property;
+import com.gesaracino.gcm.server.entity.Property;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import java.util.HashMap;
 
 /**

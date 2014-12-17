@@ -1,7 +1,7 @@
-package com.gesaracino.gcm.boundary;
+package com.gesaracino.gcm.server.boundary;
 
-import com.gesaracino.gcm.control.DeviceRegistrationRepository;
-import com.gesaracino.gcm.entity.DeviceRegistration;
+import com.gesaracino.gcm.server.control.DeviceRegistrationRepository;
+import com.gesaracino.gcm.server.entity.DeviceRegistration;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -9,6 +9,7 @@ import javax.interceptor.Interceptors;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+
 import java.util.List;
 
 @Stateless

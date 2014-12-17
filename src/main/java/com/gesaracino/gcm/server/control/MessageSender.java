@@ -1,12 +1,14 @@
-package com.gesaracino.gcm.control;
+package com.gesaracino.gcm.server.control;
 
-import com.gesaracino.gcm.entity.DeviceRegistration;
-import com.gesaracino.gcm.entity.Property;
+import com.gesaracino.gcm.server.entity.DeviceRegistration;
+import com.gesaracino.gcm.server.entity.Property;
 import com.google.android.gcm.server.*;
+
 import org.apache.log4j.Logger;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;

@@ -1,4 +1,4 @@
-package com.gesaracino.gcm.entity;
+package com.gesaracino.gcm.server.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

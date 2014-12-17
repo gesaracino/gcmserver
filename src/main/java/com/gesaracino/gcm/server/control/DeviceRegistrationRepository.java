@@ -1,11 +1,12 @@
-package com.gesaracino.gcm.control;
+package com.gesaracino.gcm.server.control;
 
-import com.gesaracino.gcm.entity.DeviceRegistration;
+import com.gesaracino.gcm.server.entity.DeviceRegistration;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
 import java.util.ArrayList;
 import java.util.List;
 

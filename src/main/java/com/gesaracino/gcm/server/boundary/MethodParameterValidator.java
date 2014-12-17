@@ -1,4 +1,4 @@
-package com.gesaracino.gcm.boundary;
+package com.gesaracino.gcm.server.boundary;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
