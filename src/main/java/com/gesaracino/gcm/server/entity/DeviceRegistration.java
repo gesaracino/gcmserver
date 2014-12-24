@@ -7,8 +7,10 @@ import javax.validation.constraints.NotNull;
 @Table(name = "DEVICE_REGISTRATIONS")
 @NamedQueries({
 		@NamedQuery(name = "DeviceRegistration.GetAll", query = "select d from DeviceRegistration d"),
-		@NamedQuery(name = "DeviceRegistration.GetById", query = "select d from DeviceRegistration d where d.id=:id"),
-		@NamedQuery(name = "DeviceRegistration.GetByRegistrationId", query = "select d from DeviceRegistration d where d.registrationId=:registrationId"), })
+		@NamedQuery(name = "DeviceRegistration.GetByDeclaredDeviceId", query = "select d from DeviceRegistration d where d.declaredDeviceId=:declaredDeviceId"),
+		@NamedQuery(name = "DeviceRegistration.GetByRegistrationId", query = "select d from DeviceRegistration d where d.registrationId=:registrationId"),
+		@NamedQuery(name = "DeviceRegistration.GetByDeclaredDeviceIdAndRegistrationId", query = "select d from DeviceRegistration d where d.declaredDeviceId=:declaredDeviceId and d.registrationId=:registrationId"),
+		@NamedQuery(name = "DeviceRegistration.GetById", query = "select d from DeviceRegistration d where d.id=:id") })
 public class DeviceRegistration {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SeqDeviceRegistrationIdGen")

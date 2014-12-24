@@ -1,29 +1,48 @@
 package com.gesaracino.gcm.server.control;
 
-import com.gesaracino.gcm.server.entity.DeviceRegistration;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.gesaracino.gcm.server.entity.DeviceRegistration;
 
 @Stateless
 public class DeviceRegistrationRepository {
 	@PersistenceContext
     private EntityManager entityManager;
 
-    public List<DeviceRegistration> getDeviceRegistrations() {
-        List<DeviceRegistration> result = entityManager.createNamedQuery("DeviceRegistration.GetAll", DeviceRegistration.class).getResultList();
+    public List<DeviceRegistration> getDeviceRegistrations(String declaredDeviceId, String registrationId) {
+    	TypedQuery<DeviceRegistration> query = entityManager.createNamedQuery("DeviceRegistration.GetAll", DeviceRegistration.class);
+    	
+    	if(declaredDeviceId == null && registrationId == null) {
+    		query = entityManager.createNamedQuery("DeviceRegistration.GetAll", DeviceRegistration.class);
+    	} else if(declaredDeviceId != null && registrationId == null) {
+    		query = entityManager.
+    				createNamedQuery("DeviceRegistration.GetByDeclaredDeviceId", DeviceRegistration.class).
+    				setParameter("declaredDeviceId", declaredDeviceId);
+    	} else if(declaredDeviceId == null && registrationId != null) {
+    		query = entityManager.
+    				createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
+    				setParameter("registrationId", registrationId);
+    	} else {
+    		query = entityManager.createNamedQuery("DeviceRegistration.GetByDeclaredDeviceIdAndRegistrationId", DeviceRegistration.class).
+    				setParameter("declaredDeviceId", declaredDeviceId).
+    				setParameter("registrationId", registrationId);
+    	}
+    	
+        List<DeviceRegistration> result = query.getResultList();
         ArrayList<DeviceRegistration> ret = new ArrayList<DeviceRegistration>(result.size());
         for(DeviceRegistration registration : result) {
             ret.add(new DeviceRegistration(registration));
         }
         return ret;
     }
-
+	
     public DeviceRegistration getDeviceRegistration(Long id) {
         return new DeviceRegistration(entityManager.
                 createNamedQuery("DeviceRegistration.GetById", DeviceRegistration.class).
