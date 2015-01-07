@@ -14,7 +14,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.gesaracino.gcm.server.control.DeviceRegistrationRepository;
@@ -28,9 +27,14 @@ public class DeviceRegistrations {
 	private DeviceRegistrationRepository datastore;
 
     @GET
-	public List<DeviceRegistration> getDeviceRegistrations(@QueryParam(value = "declaredDeviceId") String declaredDeviceId,
-			@QueryParam(value = "registrationId") String registrationId) {
-    	return datastore.getDeviceRegistrations(declaredDeviceId, registrationId);
+	public List<DeviceRegistration> getDeviceRegistrations() {
+    	return datastore.getDeviceRegistrations();
+	}
+    
+    @GET
+    @Path("byRegistrationId/{registrationId}")
+	public DeviceRegistration getDeviceRegistrationByRegistrationId(@PathParam(value = "registrationId") String registrationId) {
+    	return datastore.getDeviceRegistrationByRegistrationId(registrationId);
 	}
 	
 	@GET

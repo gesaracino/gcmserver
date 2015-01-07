@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import com.gesaracino.gcm.server.entity.DeviceRegistration;
 
@@ -16,26 +15,8 @@ public class DeviceRegistrationRepository {
 	@PersistenceContext
     private EntityManager entityManager;
 
-    public List<DeviceRegistration> getDeviceRegistrations(String declaredDeviceId, String registrationId) {
-    	TypedQuery<DeviceRegistration> query = entityManager.createNamedQuery("DeviceRegistration.GetAll", DeviceRegistration.class);
-    	
-    	if(declaredDeviceId == null && registrationId == null) {
-    		query = entityManager.createNamedQuery("DeviceRegistration.GetAll", DeviceRegistration.class);
-    	} else if(declaredDeviceId != null && registrationId == null) {
-    		query = entityManager.
-    				createNamedQuery("DeviceRegistration.GetByDeclaredDeviceId", DeviceRegistration.class).
-    				setParameter("declaredDeviceId", declaredDeviceId);
-    	} else if(declaredDeviceId == null && registrationId != null) {
-    		query = entityManager.
-    				createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
-    				setParameter("registrationId", registrationId);
-    	} else {
-    		query = entityManager.createNamedQuery("DeviceRegistration.GetByDeclaredDeviceIdAndRegistrationId", DeviceRegistration.class).
-    				setParameter("declaredDeviceId", declaredDeviceId).
-    				setParameter("registrationId", registrationId);
-    	}
-    	
-        List<DeviceRegistration> result = query.getResultList();
+    public List<DeviceRegistration> getDeviceRegistrations() {
+    	List<DeviceRegistration> result = entityManager.createNamedQuery("DeviceRegistration.GetAll", DeviceRegistration.class).getResultList();
         ArrayList<DeviceRegistration> ret = new ArrayList<DeviceRegistration>(result.size());
         for(DeviceRegistration registration : result) {
             ret.add(new DeviceRegistration(registration));
@@ -47,6 +28,13 @@ public class DeviceRegistrationRepository {
         return new DeviceRegistration(entityManager.
                 createNamedQuery("DeviceRegistration.GetById", DeviceRegistration.class).
                 setParameter("id", id).
+                getSingleResult());
+    }
+    
+    public DeviceRegistration getDeviceRegistrationByRegistrationId(String registrationId) {
+        return new DeviceRegistration(entityManager.
+				createNamedQuery("DeviceRegistration.GetByRegistrationId", DeviceRegistration.class).
+				setParameter("registrationId", registrationId).
                 getSingleResult());
     }
 
